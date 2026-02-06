@@ -28,7 +28,7 @@ jobs:
         run: |
           python update_github_stats.py
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Commit & Push README.md
         run: |
