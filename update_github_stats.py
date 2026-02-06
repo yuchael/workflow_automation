@@ -18,8 +18,8 @@ HEADERS = {
 README_PATH = "README.md"
 
 def get_github_stats():
-    url = f"https://api.github.com/users/{USERNAME}"
-    repos_url = f"https://api.github.com/users/{USERNAME}/repos"
+    url = f"https://api.github.com/users/{yuchael}"
+    repos_url = f"https://api.github.com/users/{yuchael}/repos"
 
     user_res = requests.get(url, headers=HEADERS)
     repos_res = requests.get(repos_url, headers=HEADERS)
