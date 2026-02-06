@@ -1,45 +1,39 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
-name: Python application
+name: GitHub Stats Auto Update
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
-    
+    - cron: "*/10 * * * *"   # 10분마다 실행
   push:
-    branches: [ "main" ]
-
-  workflow_dispatch:   # 버튼으로 트리거 수행하는 옵션 
+    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  update:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-        
-    - name: Install dependencies
-      run: |   # '|'는 아래의 코드를 한 줄 씩 수행함을 의미
-        python -m pip install --upgrade pip
-        pip install requests python-dotenv
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
-    - name: Run update_weather.py
-      run: |
-        python update_weather.py
-      env:
-        OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}   # settings의 githubaction의 repo secret에 넘겨준 변수 사용
+      - uses: actions/checkout@v4
 
-    - name: Commit & Push Readme.md
-      run: |
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv
+
+      - name: Run script
+        run: |
+          python update_github_stats.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit & Push README.md
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "자동 업데이트: 서울 날씨 정보 갱신" || echo "No changes to commit"
+          git commit -m "자동 업데이트: GitHub stats 갱신" || echo "No changes to commit"
           git push
